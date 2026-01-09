@@ -6,6 +6,7 @@ from datetime import datetime, date
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import psycopg2 
+from datetime import datetime, timedelta, timezone
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -170,6 +171,11 @@ ascii_redfor_small = r"""
                                                                                                     
 """
 
+#time until shop reset
+"""
+
+"""
+
 def get_pc_info(card_name):
     conn = psycopg2.connect(connection_string)
     
@@ -200,6 +206,16 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
     conn = psycopg2.connect(connection_string)
     cur = conn.cursor()
 
+    now = datetime.now(timezone.utc)
+    next_midnight = (now + timedelta(days=1)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+
+    unix = int(next_midnight.timestamp())
+    next_shop_reset = f"<t:{unix}:R>"
+
+    query_date = None
+
     if shop_date is not None:
         try:
             query_date = datetime.strptime(shop_date, "%Y-%m-%d").date()
@@ -209,9 +225,11 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
         
         cur.execute(
             """
-            SELECT pc1, pc2, pc3 
+            SELECT pc1, pc2, pc3, log_date
             FROM shop_log
             WHERE log_date = %s
+            ORDER BY log_date DESC
+            LIMIT 1
             """,
             (query_date,)
         )
@@ -237,6 +255,14 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
         return
     
     pc1, pc2, pc3, log_date = row
+
+    #decide which header to display
+    shop_date_str = log_date.strftime("%A, %B %d, %Y")
+    user_provided_date = shop_date is not None
+    if user_provided_date:
+        header = f"**Shop for {shop_date_str}:**\nNext shop reset is {next_shop_reset}\n(Not every card is stored at the moment. If there is an image missing, it will not be sent.)"
+    else:
+        header = f"**Here's the shop right now:**\nNext shop reset is {next_shop_reset}\n(Not every card is stored at the moment. If there is an image missing, it will not be sent.)"
 
     pc_directory = "./BomblinePCs"
     extension = ".png"
@@ -266,11 +292,11 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
 
         embeds.append(embed)
 
-        cur.close()
-        conn.close()
+    cur.close()
+    conn.close()
 
     await interaction.response.send_message(
-        content="Here's the shop right now:",
+        content=header,
         embeds=embeds,
         files=files
     )
