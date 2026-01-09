@@ -193,6 +193,7 @@ def get_pc_info(card_name):
 
 #simple commands
 
+#get shop commad
 @bot.tree.command(name="getshop", description="Get the shop for today or a specific date")
 @app_commands.describe(shop_date="Date in format YYYY-MM-DD")
 async def get_shop_items(interaction: discord.Interaction, shop_date: str | None = None):
@@ -237,13 +238,42 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
     
     pc1, pc2, pc3, log_date = row
 
-    await interaction.response.send_message(
-        f"Here's the shop right now:\n"
-        f"**{pc1}\n{pc2}\n{pc3}\n**"
-    )
+    pc_directory = "./BomblinePCs"
+    extension = ".png"
+    pc_list = [pc1, pc2, pc3]
 
-    cur.close()
-    conn.close()
+    files = []
+    embeds = []
+
+    for i, pc in enumerate(pc_list):
+        if not pc:
+            continue
+
+        path = os.path.join(pc_directory, pc + extension)
+
+        if not os.path.exists(path):
+            continue
+
+        file = discord.File(path, filename = f"{pc}.png")
+        files.append(file)
+
+        embed = discord.Embed(
+            title=f"Playercard {i + 1}",
+            description=pc,
+            color=discord.Color.dark_grey()
+        )
+        embed.set_image(url = f"attachment://{pc}.png")
+
+        embeds.append(embed)
+
+        cur.close()
+        conn.close()
+
+    await interaction.response.send_message(
+        content="Here's the shop right now:",
+        embeds=embeds,
+        files=files
+    )
     
 @bot.event
 async def on_ready():
