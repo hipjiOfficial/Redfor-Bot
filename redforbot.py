@@ -176,6 +176,8 @@ ascii_redfor_small = r"""
 
 """
 
+
+
 def get_pc_info(card_name):
     conn = psycopg2.connect(connection_string)
     
@@ -196,6 +198,10 @@ def get_pc_info(card_name):
             return cur.fetchone()
     finally:
         conn.close()
+
+def get_missing_pcs():
+    with open("missingpcs.txt", "r") as f:
+        return f.read()
 
 #simple commands
 
@@ -319,6 +325,10 @@ async def status_slash(interaction: discord.Interaction):
 @bot.tree.command(name="info", description="Get info regarding the bot")
 async def info_slash(interaction: discord.Interaction):
     await interaction.response.send_message("Redfor Bot is a utility bot for bombline. It is a condensed version of what you would find on [placeholder](https://www.google.com/).\nCreated by [hipji](https://github.com/hipjiOfficial)")
+
+@bot.tree.command(name="missing", description="Sends the missing playercards")
+async def missing_slash(interaction: discord.Interaction):
+    await interaction.response.send_message(get_missing_pcs())
 
 @bot.tree.command(name="hello", description="Says hello!")
 async def hello(interaction: discord.Interaction):
