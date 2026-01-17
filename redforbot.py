@@ -271,7 +271,7 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
         header = f"**Here's the shop right now:**\nNext shop reset is {next_shop_reset}\n(Not every card is stored at the moment. If there is an image missing, it will not be sent.)"
 
     pc_directory = "./BomblinePCs"
-    extension = ".png"
+    extensions = [".png", ".gif"]
     pc_list = [pc1, pc2, pc3]
 
     files = []
@@ -281,12 +281,22 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
         if not pc:
             continue
 
-        path = os.path.join(pc_directory, pc + extension)
+        path = None
+        used_ext = None
+        
+        for ext in extensions:
+            candidate = os.path.join(pc_directory, pc + ext)
+            if os.path.exists(candidate):
+                path = candidate
+                used_ext = ext
+                break
 
-        if not os.path.exists(path):
+        if not path:
             continue
 
-        file = discord.File(path, filename = f"{pc}.png")
+        filename = f"{pc}{used_ext}"
+
+        file = discord.File(path, filename=filename)
         files.append(file)
 
         embed = discord.Embed(
@@ -294,10 +304,10 @@ async def get_shop_items(interaction: discord.Interaction, shop_date: str | None
             description=pc,
             color=discord.Color.dark_grey()
         )
-        embed.set_image(url = f"attachment://{pc}.png")
+        embed.set_image(url=f"attachment://{filename}")
 
         embeds.append(embed)
-
+    
     cur.close()
     conn.close()
 
