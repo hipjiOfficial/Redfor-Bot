@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python3 redforbot.py
+python3 redforbot.py

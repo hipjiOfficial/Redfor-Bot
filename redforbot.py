@@ -2,22 +2,28 @@ import discord
 import os
 from discord.ext import commands
 from discord import app_commands
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, timezone
 from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
-import psycopg2 
-from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
+import psycopg2
 
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+
 # env variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+if Path(".env").exists():
+    load_dotenv()
+
 connection_string = os.getenv("DB_CONNECTION_STRING")
 bot_token = os.getenv("BOT_TOKEN")
+
+if not connection_string:
+    raise RuntimeError("connection_string is not set")
+
+if not bot_token:
+    raise RuntimeError("bot_token is not set")
 
 ascii_blufor = r"""                                                                                              
       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%####%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      
