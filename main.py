@@ -353,7 +353,7 @@ async def hello(interaction: discord.Interaction):
 #playcard dropdown command
 
 CARD_FOLDER = Path("BomblinePCS")
-ALL_CARDS = {p.stem: p for p in CARD_FOLDER.glob("*.png")}
+ALL_CARDS = {p.stem: p for p in list(CARD_FOLDER.glob("*.png")) + list(CARD_FOLDER.glob("*.gif"))}
 
 CARD_NAMES = sorted(ALL_CARDS.keys())
 PAGE_SIZE = 20
