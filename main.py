@@ -373,8 +373,8 @@ class PlayercardDropdown(discord.ui.Select):
         if not options:
             options = [
                 discord.SelectOption(
-                    label="Debug: No playercards available?"
-                    value="None"
+                    label="No playercards available",
+                    value="None",
                     default=True
                 )
             ]
