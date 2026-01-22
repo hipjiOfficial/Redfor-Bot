@@ -363,8 +363,8 @@ print("CARD_FOLDER:", CARD_FOLDER)
 print("Exists:", CARD_FOLDER.exists())
 print("Contents:", list(CARD_FOLDER.iterdir()) if CARD_FOLDER.exists() else "N/A")
 print("========================")
-ALL_CARDS = {p.stem: p for p in list(CARD_FOLDER.glob("*.png")) + list(CARD_FOLDER.glob("*.gif"))}
 
+ALL_CARDS = {p.stem: p for p in list(CARD_FOLDER.glob("*.png")) + list(CARD_FOLDER.glob("*.gif"))}
 CARD_NAMES = sorted(ALL_CARDS.keys())
 PAGE_SIZE = 20
 MAX_PAGE = max(0, (len(CARD_NAMES) - 1) // PAGE_SIZE)
@@ -380,7 +380,7 @@ class PlayercardDropdown(discord.ui.Select):
             for name in CARD_NAMES[start:end]
         ]
 
-        if not options:
+        if not options: # rm this later
             options = [
                 discord.SelectOption(
                     label="No playercards available",
