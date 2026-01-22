@@ -352,9 +352,9 @@ async def hello(interaction: discord.Interaction):
 
 #playcard dropdown command
 
-CARD_FOLDER = Path("BomblinePCS")
+CARD_FOLDER = Path("BomblinePCs")
 BASE_DIR = Path(__file__).resolve().parent
-CARD_FOLDER = BASE_DIR / "BomblinePCS"
+CARD_FOLDER = BASE_DIR / "BomblinePCs"
 
 print("=== DEBUG FILESYSTEM ===")
 print("CWD:", Path.cwd())
