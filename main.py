@@ -357,7 +357,7 @@ ALL_CARDS = {p.stem: p for p in list(CARD_FOLDER.glob("*.png")) + list(CARD_FOLD
 
 CARD_NAMES = sorted(ALL_CARDS.keys())
 PAGE_SIZE = 20
-MAX_PAGE = (len(CARD_NAMES) - 1) // PAGE_SIZE
+MAX_PAGE = max(0, (len(CARD_NAMES) - 1) // PAGE_SIZE)
 
 class PlayercardDropdown(discord.ui.Select):
     def __init__(self, page: int):
@@ -369,6 +369,15 @@ class PlayercardDropdown(discord.ui.Select):
             discord.SelectOption(label=name, value=name)
             for name in CARD_NAMES[start:end]
         ]
+
+        if not options:
+            options = [
+                discord.SelectOption(
+                    label="Debug: No playercards available?"
+                    value="None"
+                    default=True
+                )
+            ]
 
         super().__init__(
             placeholder=f"Choose a playercard (Page {page + 1}/{MAX_PAGE + 1})",
