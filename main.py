@@ -353,6 +353,16 @@ async def hello(interaction: discord.Interaction):
 #playcard dropdown command
 
 CARD_FOLDER = Path("BomblinePCS")
+BASE_DIR = Path(__file__).resolve().parent
+CARD_FOLDER = BASE_DIR / "BomblinePCS"
+
+print("=== DEBUG FILESYSTEM ===")
+print("CWD:", Path.cwd())
+print("BASE_DIR:", BASE_DIR)
+print("CARD_FOLDER:", CARD_FOLDER)
+print("Exists:", CARD_FOLDER.exists())
+print("Contents:", list(CARD_FOLDER.iterdir()) if CARD_FOLDER.exists() else "N/A")
+print("========================")
 ALL_CARDS = {p.stem: p for p in list(CARD_FOLDER.glob("*.png")) + list(CARD_FOLDER.glob("*.gif"))}
 
 CARD_NAMES = sorted(ALL_CARDS.keys())
