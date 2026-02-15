@@ -6,6 +6,7 @@ from datetime import datetime, date, timedelta, timezone
 from pathlib import Path
 from dotenv import load_dotenv
 import psycopg2
+import requests
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -350,6 +351,28 @@ async def missing_slash(interaction: discord.Interaction):
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message("Hello!")
 
+"""
+@bot.tree.command(name="howdead", description="Compares the activity of bombline to sniper duels.")
+async def howdead_slash(interaction: discord.Interaction):
+    bl_url = ""
+    sd_url = ""
+
+    try:
+        bl_response = requests.get(bl_url)
+        sd_response = requests.get(sd_url)
+
+        bl_players = bl_response.json()["data"][0]["playing"]
+        sd_players = sd_response.json()["data"][0]["playing"]
+
+        await interaction.response.send_message(
+            f"Bombline has {bl_players} players right now.\n"
+            f"Sniper Duels has {sd_players} players right now."
+        )
+    except Exception as e:
+        await interaction.response.send_message("Failed to fetch player counts.")
+        print(e)
+"""
+
 #playcard dropdown command
 
 CARD_FOLDER = Path("BomblinePCs")
@@ -466,6 +489,12 @@ async def getplayercard_slash(interaction: discord.Interaction):
         "Select a playercard:",
         view=PlayercardView()
     )
+"""
+@bot.tree.command(
+    name="notifyme",
+    description="Notifies you when a specific playercard appears in the shop"
+)
+"""
 
 bot.run(bot_token)
 
